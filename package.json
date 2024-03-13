@@ -27,6 +27,13 @@
     "pm2": "3.0.4"
   },
   "devDependencies": {
-    "nodemon": "1.18.4"
+    "@types/node": "^20.11.27",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-prettier": "^0.0.0-empty",
+    "nodemon": "1.18.4",
+    "prettier": "^3.2.5"
   }
 }
