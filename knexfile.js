@@ -1,12 +1,14 @@
 const path = require('path');
 
 module.exports = {
-  client: 'postgresql',
+  client: 'pg',
   connection: {
-    database: 'knowledge',
+    host: 'localhost',
     user: 'postgres',
-    password: 'password',
+    password: 'postgres',
+    database: 'knowledge',
   },
+  searchPath: ['knex', 'public'],
   pool: {
     min: 2,
     max: 10,
