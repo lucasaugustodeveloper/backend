@@ -91,14 +91,42 @@ module.exports = (app) => {
     const { id } = req.params;
 
     app.db
-      .select('id', 'name', 'email', 'admin')
+      .select('id', 'name', 'email', ' admin')
+      .from('users')
       .where({ id })
+      .first()
       .then((user) => {
-        res.json({
+        if (!Object.keys(user).length) {
+          return res.status(404).send({
+            status: 404,
+            data: 'User not found',
+          });
+        }
+
+        return res.json({
           status: 200,
           data: user,
         });
+      })
+      .catch((error) => {
+        res.status(500).send({
+          status: 500,
+          data: error,
+        });
       });
+
+    // app.db
+    //   .select('id', 'name', 'email', 'admin')
+    //   .where({ id })
+    //   .then((user) => {
+    //     console.log('user', user);
+    //   })
+    //   .catch((err) => {
+    //     res.status(500).send({
+    //       status: 500,
+    //       data: err,
+    //     });
+    //   });
   };
 
   return {

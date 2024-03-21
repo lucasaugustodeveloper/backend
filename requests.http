@@ -1,0 +1,17 @@
+###
+http://localhost:3000/users
+
+###
+POST http://localhost:3000/users HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Lucas Augusto",
+    "email": "lucas.augusto5061@gmail.com",
+    "password": "123456",
+    "confirmPassword": "123456",
+    "admin": true
+}
+
+###
+GET http://localhost:3000/users/1 HTTP/1.1
