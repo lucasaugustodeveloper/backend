@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 module.exports = (app) => {
   const { existsOrError, notExistsOrError } = app.api.validation;
 
@@ -104,10 +105,40 @@ module.exports = (app) => {
       .catch((err) => res.status(500).send({ status: 500, data: err }));
   };
 
+  const toTree = (categories, tree) => {
+    if (!tree) tree = categories.filter((c) => !c.parentId);
+
+    tree = tree.map((parentNode) => {
+      const isChild = (node) => node.parentId === parentNode.id;
+
+      parentNode.children = toTree(categories, categories.filter(isChild));
+
+      return parentNode;
+    });
+
+    return tree;
+  };
+
+  const getTree = (req, res) => {
+    app
+      .db('categories')
+      .then((categories) => {
+        console.log('categories', categories);
+        res.status(200).send({
+          status: 200,
+          data: toTree(categories),
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({ status: 500, data: err });
+      });
+  };
+
   return {
     save,
     remove,
     getCategories,
     getById,
+    getTree,
   };
 };
