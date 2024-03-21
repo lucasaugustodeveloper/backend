@@ -87,8 +87,23 @@ module.exports = (app) => {
       });
   };
 
+  const getById = (req, res) => {
+    const { id } = req.params;
+
+    app.db
+      .select('id', 'name', 'email', 'admin')
+      .where({ id })
+      .then((user) => {
+        res.json({
+          status: 200,
+          data: user,
+        });
+      });
+  };
+
   return {
     getAllUsers,
     save,
+    getById,
   };
 };
