@@ -104,10 +104,47 @@ module.exports = (app) => {
       .catch((err) => res.status(500).send({ status: 500, data: err }));
   };
 
+  const toTree = (categories, tree) => {
+    const newTree = [];
+
+    if (!tree) {
+      newTree.push(...categories.filter((c) => !c.parentId));
+    }
+
+    const newTreeWithChildren = tree.map((parentNode) => {
+      const isChild = (node) => node.parentId === parentNode.id;
+
+      const children = toTree(categories, categories.filter(isChild));
+
+      return {
+        ...parentNode,
+        children,
+      };
+    });
+
+    return newTreeWithChildren;
+  };
+
+  const getTree = (req, res) => {
+    app
+      .db('categories')
+      .then((categories) => {
+        console.log('categories', categories);
+        res.status(200).send({
+          status: 200,
+          data: toTree(withPath(categories)),
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({ status: 500, data: err });
+      });
+  };
+
   return {
     save,
     remove,
     getCategories,
     getById,
+    getTree,
   };
 };
