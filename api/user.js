@@ -48,6 +48,7 @@ module.exports = (app) => {
         .db('users')
         .update(user)
         .where({ id: user.id })
+        .whereNull('deletedAt')
         .then(() => res.status(204).send())
         .catch((err) =>
           res.status(500).send({
@@ -73,6 +74,7 @@ module.exports = (app) => {
     app
       .db('users')
       .select('id', 'name', 'email', 'admin')
+      .whereNull('deletedAt')
       .then((users) =>
         res.json({
           status: 200,
@@ -94,6 +96,7 @@ module.exports = (app) => {
       .select('id', 'name', 'email', ' admin')
       .from('users')
       .where({ id })
+      .whereNull('deletedAt')
       .first()
       .then((user) => {
         if (!Object.keys(user).length) {
@@ -129,9 +132,34 @@ module.exports = (app) => {
     //   });
   };
 
+  const remove = async (req, res) => {
+    try {
+      const articles = await app
+        .db('articles')
+        .where({ userId: req.params.id });
+
+      notExistsOrError(articles, 'User have articles');
+
+      const rowsUpdated = await app
+        .db('users')
+        .update({ deletedAt: new Date() })
+        .where({ id: req.params.id });
+
+      existsOrError(rowsUpdated, 'User not found');
+
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).send({
+        status: 400,
+        data: err,
+      });
+    }
+  };
+
   return {
     getAllUsers,
     save,
     getById,
+    remove,
   };
 };
