@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 module.exports = (app) => {
   const { existsOrError, notExistsOrError } = app.api.validation;
 
