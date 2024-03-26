@@ -106,17 +106,24 @@ module.exports = (app) => {
   };
 
   const toTree = (categories, tree) => {
-    if (!tree) tree = categories.filter((c) => !c.parentId);
+    const newTree = [];
 
-    tree = tree.map((parentNode) => {
+    if (!tree) {
+      newTree.push(...categories.filter((c) => !c.parentId));
+    }
+
+    const newTreeWithChildren = tree.map((parentNode) => {
       const isChild = (node) => node.parentId === parentNode.id;
 
-      parentNode.children = toTree(categories, categories.filter(isChild));
+      const children = toTree(categories, categories.filter(isChild));
 
-      return parentNode;
+      return {
+        ...parentNode,
+        children,
+      };
     });
 
-    return tree;
+    return newTreeWithChildren;
   };
 
   const getTree = (req, res) => {
@@ -126,7 +133,7 @@ module.exports = (app) => {
         console.log('categories', categories);
         res.status(200).send({
           status: 200,
-          data: toTree(categories),
+          data: toTree(withPath(categories)),
         });
       })
       .catch((err) => {
