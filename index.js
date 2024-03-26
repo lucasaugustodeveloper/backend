@@ -1,3 +1,4 @@
+require('dotenv').config();
 const app = require('express')();
 const consign = require('consign');
 const mongoose = require('mongoose');
@@ -17,6 +18,6 @@ consign()
   .then('./config/routes.js')
   .into(app);
 
-app.listen(3000, () => {
-  console.log('listening on port 3000');
+app.listen(process.env.PORT, () => {
+  console.log(`listening on port ${process.env.PORT}`);
 });
